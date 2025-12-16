@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Auto Search Pro",
+  "version": "2.0.0",
+  "description": "Automated search queue with custom timing intervals. Search multiple terms sequentially with fixed or random delays.",
+  "author": "Your Name",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Auto Search Pro"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "search"
+  ],
+  "host_permissions": [
+    "https://www.google.com/*"
+  ],
+  "minimum_chrome_version": "88",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "autosearchpro@extension.local",
+      "strict_min_version": "109.0"
+    }
+  }
+}

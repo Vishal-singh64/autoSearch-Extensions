@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto Search Pro</title>
+  <link rel="stylesheet" href="popup.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="app">
+    <header class="app__header">
+      <div class="icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Auto Search Pro</h1>
+        <p class="subtitle">Automated search queue with custom timing</p>
+      </div>
+    </header>
+
+    <!-- Status Overview Card -->
+    <section class="card card--status">
+      <div class="status-grid">
+        <div class="status-item">
+          <span class="status-item__label">Status</span>
+          <div id="status" class="status status--idle">
+            <span class="dot"></span>
+            <span class="status__text">Idle</span>
+          </div>
+        </div>
+        <div class="status-item">
+          <span class="status-item__label">Search Terms</span>
+          <span id="termCount" class="status-item__value">0</span>
+        </div>
+        <div class="status-item">
+          <span class="status-item__label">Progress</span>
+          <span id="progress" class="status-item__value">—</span>
+        </div>
+        <div class="status-item status-item--full">
+          <span class="status-item__label">Current Search</span>
+          <span id="currentItem" class="status-item__current">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Terms Input -->
+    <section class="card">
+      <div class="card__header">
+        <label class="label" for="words">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M12 12H15M12 16H15M9 12H9.01M9 16H9.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Search Terms
+        </label>
+        <span class="badge" id="lineCount">0 terms</span>
+      </div>
+      <textarea id="words" placeholder="Enter search terms (one per line)&#10;Example:&#10;laptop deals&#10;best smartphones 2024&#10;wireless headphones"></textarea>
+      <small class="hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 16H12V12H11M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Enter one search term per line. Each term will be searched in sequence.
+      </small>
+    </section>
+
+    <!-- Timing Controls -->
+    <section class="card">
+      <div class="card__header">
+        <label class="label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 6V12L16 14M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Timing Configuration
+        </label>
+      </div>
+
+      <div class="controls">
+        <!-- Randomize Toggle -->
+        <label class="toggle">
+          <input type="checkbox" id="randomize" />
+          <span class="toggle__slider"></span>
+          <div class="toggle__content">
+            <span class="toggle__label">Random Interval</span>
+            <span class="toggle__description">Use random delays between searches</span>
+          </div>
+        </label>
+
+        <!-- Fixed Interval -->
+        <div class="control time-control" id="fixedIntervalControl">
+          <div class="control__header">
+            <span>Fixed Interval</span>
+            <span id="intervalLabel" class="interval-value">3 s</span>
+          </div>
+          <input type="range" id="interval" min="1" max="30" value="3" step="1" />
+          <div class="range-labels">
+            <span>1s</span>
+            <span>30s</span>
+          </div>
+        </div>
+
+        <!-- Random Interval Range -->
+        <div class="control time-control" id="randomIntervalControl" style="display: none;">
+          <div class="control__header">
+            <span>Random Range (Min)</span>
+            <span id="randomMinLabel" class="interval-value">1 s</span>
+          </div>
+          <input type="range" id="randomMin" min="1" max="30" value="1" step="1" />
+          
+          <div class="control__header" style="margin-top: 12px;">
+            <span>Random Range (Max)</span>
+            <span id="randomMaxLabel" class="interval-value">5 s</span>
+          </div>
+          <input type="range" id="randomMax" min="1" max="30" value="5" step="1" />
+          <div class="range-labels">
+            <span>1s</span>
+            <span>30s</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <section class="card card--footer">
+      <button id="startBtn" class="btn btn--primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 3L19 12L5 21V3Z" fill="currentColor"/>
+        </svg>
+        Start Auto Search
+      </button>
+      <button id="stopBtn" class="btn btn--secondary" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+        </svg>
+        Stop
+      </button>
+    </section>
+
+    <!-- Footer Info -->
+    <footer class="app__footer">
+      <small>Auto Search Pro v2.0 • Compatible with Chrome, Firefox, Edge & Safari</small>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
